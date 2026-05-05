@@ -638,6 +638,44 @@ details p {
   text-decoration: underline;
 }
 
+.google-login-btn {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #d8dee6;
+  border-radius: 6px;
+  color: #172033;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 18px;
+}
+
+.google-login-btn:hover {
+  border-color: #0087d7;
+  color: #0087d7;
+}
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #667085;
+  font-size: 14px;
+  font-weight: 800;
+  margin: 4px 0 8px;
+  text-transform: uppercase;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e0e7ef;
+}
+
 label {
   display: block;
   font-size: 17px;

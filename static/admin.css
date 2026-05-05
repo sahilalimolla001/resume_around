@@ -169,6 +169,27 @@ th {
   cursor: pointer;
 }
 
+.login-links {
+  margin-top: 12px;
+  text-align: right;
+}
+
+.login-links.split {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.login-links a {
+  color: #2563eb;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.login-links a:hover {
+  text-decoration: underline;
+}
+
 .error {
   background: #fee2e2;
   color: #991b1b;

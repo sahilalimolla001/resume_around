@@ -4,9 +4,12 @@ from io import BytesIO
 import os
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request, redirect, url_for, session
+from authlib.integrations.flask_client import OAuth
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///resume.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -14,6 +17,15 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
 app.secret_key = "my_admin_secret_key"
+
+oauth = OAuth(app)
+google = oauth.register(
+    name="google",
+    client_id=os.environ.get("GOOGLE_CLIENT_ID"),
+    client_secret=os.environ.get("GOOGLE_CLIENT_SECRET"),
+    server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
+    client_kwargs={"scope": "openid email profile"},
+)
 
 
 
@@ -91,10 +103,6 @@ def contact():
 
 @app.route("/preview", methods=["POST"])
 def preview():
-    if not session.get("user_logged_in"):
-        return redirect("/login")
-    
-
     data = request.form
     photo = request.files.get("photo")
     photo_path = ""
@@ -102,7 +110,13 @@ def preview():
     if photo and photo.filename:
         photo_path = os.path.join("static/uploads", photo.filename)
         photo.save(photo_path)
-        photo_path = "/" + photo_path.replace("\\", "/")
+
+    return render_template(
+        "preview.html",
+        data=data,
+        photo_path=photo_path
+    )
+
 
     resume = Resume(
         user_id=session["user_id"],
@@ -260,6 +274,69 @@ def admin_login():
             return render_template("admin/login.html", error="Invalid username or password")
 
     return render_template("admin/login.html")
+
+@app.route("/admin/signup", methods=["GET", "POST"])
+def admin_signup():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirm_password")
+
+        existing_admin = Admin.query.filter_by(username=username).first()
+
+        if existing_admin:
+            return render_template(
+                "admin/signup.html",
+                error="Ye admin username already exists hai"
+            )
+
+        if password != confirm_password:
+            return render_template(
+                "admin/signup.html",
+                error="Password match nahi ho raha"
+            )
+
+        admin = Admin(username=username, password=password)
+        db.session.add(admin)
+        db.session.commit()
+
+        return render_template(
+            "admin/login.html",
+            success="Admin account create ho gaya. Ab login karein."
+        )
+
+    return render_template("admin/signup.html")
+
+@app.route("/admin/forgot-password", methods=["GET", "POST"])
+def admin_forgot_password():
+    if request.method == "POST":
+        username = request.form.get("username")
+        new_password = request.form.get("new_password")
+        confirm_password = request.form.get("confirm_password")
+
+        admin = Admin.query.filter_by(username=username).first()
+
+        if not admin:
+            return render_template(
+                "admin/forgot_password.html",
+                error="Admin username nahi mila"
+            )
+
+        if new_password != confirm_password:
+            return render_template(
+                "admin/forgot_password.html",
+                error="Password match nahi ho raha"
+            )
+
+        admin.password = new_password
+        db.session.commit()
+
+        return render_template(
+            "admin/login.html",
+            success="Admin password reset ho gaya. Ab new password se login karein."
+        )
+
+    return render_template("admin/forgot_password.html")
 
 @app.route("/admin/logout")
 def admin_logout():
@@ -423,6 +500,62 @@ def login():
 
     return render_template("login.html")
 
+@app.route("/auth/google")
+@app.route("/login/google")
+def google_login():
+    if not os.environ.get("GOOGLE_CLIENT_ID") or not os.environ.get("GOOGLE_CLIENT_SECRET"):
+        return render_template(
+            "login.html",
+            error="Google login setup nahi hua. Render env vars add karein."
+        )
+
+    redirect_uri = url_for("google_callback", _external=True)
+    return google.authorize_redirect(redirect_uri)
+
+@app.route("/auth/google/callback")
+@app.route("/login/google/callback")
+def google_callback():
+    try:
+        google.authorize_access_token()
+        user_info = google.get("https://openidconnect.googleapis.com/v1/userinfo").json()
+    except Exception:
+        return render_template(
+            "login.html",
+            error="Google login fail ho gaya. Please dobara try karein."
+        )
+
+    email = user_info.get("email")
+
+    if not email:
+        return render_template(
+            "login.html",
+            error="Google account se email nahi mila"
+        )
+
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        user = User(
+            full_name=user_info.get("name") or email.split("@")[0],
+            email=email,
+            password="",
+            photo=user_info.get("picture")
+        )
+        db.session.add(user)
+    else:
+        if not user.full_name:
+            user.full_name = user_info.get("name")
+        if not user.photo:
+            user.photo = user_info.get("picture")
+
+    db.session.commit()
+
+    session["user_logged_in"] = True
+    session["user_id"] = user.id
+    session["user_name"] = user.full_name
+
+    return redirect("/user-dashboard")
+
 @app.route("/forgot-password", methods=["GET", "POST"])
 def forgot_password():
     if request.method == "POST":
@@ -536,7 +669,47 @@ def download():
 
     return response
 
+@app.route("/save-resume", methods=["POST"])
+def save_resume():
+    if not session.get("user_logged_in"):
+        return redirect("/login")
 
+    data = request.form
+    photo_path = request.form.get("photo_path", "")
+
+    resume = Resume(
+        user_id=session["user_id"],
+        heading=data.get("heading"),
+        name=data.get("name"),
+        job_title=data.get("job_title"),
+        house_no=data.get("house_no"),
+        landmark=data.get("landmark"),
+        area=data.get("area"),
+        city=data.get("city"),
+        pincode=data.get("pincode"),
+        phone=data.get("phone"),
+        email=data.get("email"),
+        objective=data.get("objective"),
+        qualification=data.get("qualification"),
+        board=data.get("board"),
+        year=data.get("year"),
+        percentage=data.get("percentage"),
+        skills=data.get("skills"),
+        experience=data.get("experience"),
+        gender=data.get("gender"),
+        father_name=data.get("father_name"),
+        dob=data.get("dob"),
+        language=data.get("language"),
+        nationality=data.get("nationality"),
+        marital_status=data.get("marital_status"),
+        place=data.get("place"),
+        photo_path=photo_path
+    )
+
+    db.session.add(resume)
+    db.session.commit()
+
+    return redirect("/resumes")
 
 
 

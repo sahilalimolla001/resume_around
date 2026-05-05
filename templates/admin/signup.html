@@ -1,21 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Admin Login</title>
+  <title>Admin Signup</title>
   <link rel="stylesheet" href="/static/admin.css">
 </head>
 <body>
 
 <div class="login-page">
   <form class="login-box" method="POST">
-    <h1>Admin Login</h1>
+    <h1>Admin Signup</h1>
 
     {% if error %}
       <p class="error">{{ error }}</p>
-    {% endif %}
-
-    {% if success %}
-      <p class="success">{{ success }}</p>
     {% endif %}
 
     <label>Username</label>
@@ -24,12 +20,14 @@
     <label>Password</label>
     <input type="password" name="password" required>
 
-    <div class="login-links split">
-      <a href="/admin/signup">Signup</a>
-      <a href="/admin/forgot-password">Forgot Password?</a>
-    </div>
+    <label>Confirm Password</label>
+    <input type="password" name="confirm_password" required>
 
-    <button type="submit">Login</button>
+    <button type="submit">Create Admin</button>
+
+    <div class="login-links">
+      <a href="/admin/login">Back to Login</a>
+    </div>
   </form>
 </div>
 
