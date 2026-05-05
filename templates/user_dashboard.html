@@ -17,23 +17,43 @@
     <a href="/">Home</a>
     <a href="/create-resume">Create Resume</a>
     <a href="/resumes">My Resumes</a>
-    <a href="/user/logout">Logout</a>
     <a href="/profile">Profile</a>
+    <a href="/user/logout">Logout</a>
   </nav>
 
 </header>
 
-<div class="page-center">
+<main class="page">
+  <div class="heading-box">
+    User <span>Dashboard</span>
+  </div>
 
-  <h1>
-    Welcome {{ user.full_name }}
-  </h1>
+  <section class="profile-summary card">
+    <div class="profile-summary-photo">
+      {% if user.photo %}
+        <img src="{{ user.photo }}" alt="{{ user.full_name }} profile photo">
+      {% else %}
+        <span>{{ (user.full_name or user.email or "U")[0] }}</span>
+      {% endif %}
+    </div>
 
-  <p>
-    Email : {{ user.email }}
-  </p>
+    <div class="profile-summary-info">
+      <p class="eyebrow">My Profile</p>
+      <h1>Welcome {{ user.full_name or "User" }}</h1>
+      <div class="profile-details">
+        <p><strong>Email:</strong> {{ user.email or "-" }}</p>
+        <p><strong>Phone:</strong> {{ user.phone or "-" }}</p>
+        <p><strong>City:</strong> {{ user.city or "-" }}</p>
+      </div>
 
-</div>
+      <div class="dashboard-actions">
+        <a class="btn-primary" href="/profile">Edit Profile</a>
+        <a class="btn-secondary" href="/resumes">My Resumes</a>
+        <a class="btn-secondary" href="/create-resume">Create Resume</a>
+      </div>
+    </div>
+  </section>
+</main>
 
 {% include "footer.html" %}
 
