@@ -5,7 +5,7 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request, redirect, url_for, session
 from authlib.integrations.flask_client import OAuth
-from sqlalchemy import or_
+from sqlalchemy import func, or_
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 
@@ -266,6 +266,109 @@ def admin_dashboard():
         latest_resumes=latest_resumes,
         latest_users=latest_users,
         admin=admin
+    )
+
+
+@app.route("/admin/analytics")
+def admin_analytics():
+    if not session.get("admin_logged_in"):
+        return redirect("/admin/login")
+
+    total_users = User.query.count()
+    total_resumes = Resume.query.count()
+    google_users = User.query.filter_by(password="").count()
+    email_users = total_users - google_users
+    linked_resumes = Resume.query.filter(Resume.user_id.isnot(None)).count()
+    guest_resumes = total_resumes - linked_resumes
+    avg_resumes_per_user = round(total_resumes / total_users, 2) if total_users else 0
+
+    def make_rows(rows):
+        highest = max([row.count for row in rows], default=0)
+        return [
+            {
+                "label": row.label or "Not filled",
+                "count": row.count,
+                "percent": round((row.count / highest) * 100) if highest else 0
+            }
+            for row in rows
+        ]
+
+    top_user_cities = make_rows(
+        db.session.query(
+            User.city.label("label"),
+            func.count(User.id).label("count")
+        )
+        .filter(User.city.isnot(None), User.city != "")
+        .group_by(User.city)
+        .order_by(func.count(User.id).desc())
+        .limit(6)
+        .all()
+    )
+
+    top_resume_cities = make_rows(
+        db.session.query(
+            Resume.city.label("label"),
+            func.count(Resume.id).label("count")
+        )
+        .filter(Resume.city.isnot(None), Resume.city != "")
+        .group_by(Resume.city)
+        .order_by(func.count(Resume.id).desc())
+        .limit(6)
+        .all()
+    )
+
+    top_jobs = make_rows(
+        db.session.query(
+            Resume.job_title.label("label"),
+            func.count(Resume.id).label("count")
+        )
+        .filter(Resume.job_title.isnot(None), Resume.job_title != "")
+        .group_by(Resume.job_title)
+        .order_by(func.count(Resume.id).desc())
+        .limit(6)
+        .all()
+    )
+
+    login_mix = [
+        {
+            "label": "Google Login",
+            "count": google_users,
+            "percent": round((google_users / total_users) * 100) if total_users else 0
+        },
+        {
+            "label": "Email Login",
+            "count": email_users,
+            "percent": round((email_users / total_users) * 100) if total_users else 0
+        }
+    ]
+
+    resume_mix = [
+        {
+            "label": "Saved By Users",
+            "count": linked_resumes,
+            "percent": round((linked_resumes / total_resumes) * 100) if total_resumes else 0
+        },
+        {
+            "label": "Guest / Preview",
+            "count": guest_resumes,
+            "percent": round((guest_resumes / total_resumes) * 100) if total_resumes else 0
+        }
+    ]
+
+    return render_template(
+        "admin/analytics.html",
+        total_users=total_users,
+        total_resumes=total_resumes,
+        google_users=google_users,
+        email_users=email_users,
+        linked_resumes=linked_resumes,
+        guest_resumes=guest_resumes,
+        avg_resumes_per_user=avg_resumes_per_user,
+        top_user_cities=top_user_cities,
+        top_resume_cities=top_resume_cities,
+        top_jobs=top_jobs,
+        login_mix=login_mix,
+        resume_mix=resume_mix
     )
 
 
