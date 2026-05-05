@@ -74,6 +74,14 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 def home():
     return render_template("home.html")
 
+@app.route("/ads.txt")
+def ads_txt():
+    response = make_response(
+        "google.com, pub-7684589270274579, DIRECT, f08c47fec0942fa0\n"
+    )
+    response.headers["Content-Type"] = "text/plain"
+    return response
+
 @app.route("/create-resume")
 def create_resume():
     return render_template("resume.html")
