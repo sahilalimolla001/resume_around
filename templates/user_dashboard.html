@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="navbar">
+
+  <div class="logo">
+    Resume <span>Around</span>
+  </div>
+
+  <nav>
+    <a href="/">Home</a>
+    <a href="/create-resume">Create Resume</a>
+    <a href="/resumes">My Resumes</a>
+    <a href="/user/logout">Logout</a>
+    <a href="/profile">Profile</a>
+  </nav>
+
+</header>
+
+<div class="page-center">
+
+  <h1>
+    Welcome {{ user.full_name }}
+  </h1>
+
+  <p>
+    Email : {{ user.email }}
+  </p>
+
+</div>
+
+{% include "footer.html" %}
+
+</body>
+</html>

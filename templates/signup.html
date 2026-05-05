@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Signup</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">Resume <span>Around</span></div>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/create-resume">Create Resume/CV</a>
+    <a href="/signup">Signup</a>
+    <a href="/login">Login</a>
+  </nav>
+</header>
+
+<div class="page">
+  <div class="heading-box">
+    User <span>Signup</span>
+  </div>
+
+  <form method="POST" class="card">
+
+    {% if error %}
+      <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <label>Full Name</label>
+    <input type="text" name="full_name" required>
+
+    <label>Email</label>
+    <input type="email" name="email" required>
+
+    <label>Password</label>
+    <input type="password" name="password" required>
+
+    <button type="submit">Signup</button>
+
+  </form>
+</div>
+
+{% include "footer.html" %}
+
+</body>
+</html>

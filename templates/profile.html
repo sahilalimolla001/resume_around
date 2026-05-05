@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Profile</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="navbar">
+
+  <div class="logo">
+    Resume <span>Around</span>
+  </div>
+
+  <nav>
+    <a href="/user-dashboard">Dashboard</a>
+    <a href="/resumes">My Resumes</a>
+    <a href="/profile">Profile</a>
+    <a href="/user/logout">Logout</a>
+  </nav>
+
+</header>
+
+<div class="page">
+
+  <div class="heading-box">
+    My <span>Profile</span>
+  </div>
+
+  <form
+    method="POST"
+    enctype="multipart/form-data"
+    class="card">
+
+    {% if user.photo %}
+      <img
+      src="{{ user.photo }}"
+      class="profile-photo">
+    {% endif %}
+
+    <label>Profile Photo</label>
+    <input type="file" name="photo">
+
+    <label>Full Name</label>
+    <input
+    name="full_name"
+    value="{{ user.full_name }}">
+
+    <label>Email</label>
+    <input
+    name="email"
+    value="{{ user.email }}">
+
+    <label>Phone</label>
+    <input
+    name="phone"
+    value="{{ user.phone }}">
+
+    <label>City</label>
+    <input
+    name="city"
+    value="{{ user.city }}">
+
+    <label>New Password</label>
+    <input
+    type="password"
+    name="password">
+
+    <button type="submit">
+      Update Profile
+    </button>
+
+  </form>
+
+</div>
+
+{% include "footer.html" %}
+
+</body>
+</html>

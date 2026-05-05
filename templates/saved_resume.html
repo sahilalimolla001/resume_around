@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saved Resumes</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="navbar">
+  <a class="logo" href="/">Resume <span>Around</span></a>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/create-resume">Create Resume/CV</a>
+    <a href="/resumes">Saved Resumes</a>
+    <a href="/user-dashboard">Dashboard</a>
+  </nav>
+</header>
+
+<main class="page">
+  <h1>Saved Resumes</h1>
+
+  {% for resume in resumes %}
+    <div class="resume-list-card">
+      <h2>{{ resume.name }}</h2>
+      <p>{{ resume.job_title }}</p>
+      <p>{{ resume.phone }} | {{ resume.email }}</p>
+
+      <div class="resume-list-actions">
+        <a class="user-edit-btn" href="/resume/edit/{{ resume.id }}">Edit</a>
+        <a class="download-link" href="/resume/download/{{ resume.id }}">Download PDF</a>
+      </div>
+    </div>
+  {% else %}
+    <p>No resumes saved yet.</p>
+  {% endfor %}
+</main>
+
+{% include "footer.html" %}
+
+</body>
+</html>

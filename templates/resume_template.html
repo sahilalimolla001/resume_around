@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @page {
+    size: A4;
+    margin: 25px;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    color: #000;
+  }
+
+  .resume-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    text-decoration: underline;
+    margin-bottom: 12px;
+  }
+
+  .name {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 3px;
+  }
+
+  .job {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  .section {
+    font-size: 15px;
+    font-weight: bold;
+    background-color: #d9d9d9;
+    border: 1px solid #777;
+    padding: 5px;
+    margin-top: 14px;
+    margin-bottom: 7px;
+  }
+
+  p {
+    margin: 3px 0;
+    line-height: 1.4;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .academic th,
+  .academic td {
+    border: 1px solid #000;
+    padding: 6px;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .academic th {
+    font-weight: bold;
+    background-color: #eeeeee;
+  }
+
+  .personal td {
+    padding: 3px 0;
+    font-size: 13px;
+  }
+
+  .label {
+    width: 160px;
+    font-weight: bold;
+  }
+
+  .signature {
+    text-align: right;
+    margin-top: 35px;
+    font-weight: bold;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="resume-title">{{ data.heading }}</div>
+{% if photo_path %}
+  <img src="{{ photo_path }}" style="width:100px;height:120px;object-fit:cover;float:right;border:1px solid #333;padding:3px;">
+{% endif %}
+<div class="name">{{ data.name }}</div>
+<div class="job">{{ data.job_title }}</div>
+
+<p>{{ data.house_no }}, {{ data.landmark }}</p>
+<p>{{ data.area }}, {{ data.city }} - {{ data.pincode }}</p>
+<p>Mob No. : {{ data.phone }}</p>
+<p>Email Id : {{ data.email }}</p>
+
+<div class="section">CAREER OBJECTIVE</div>
+<p>{{ data.objective }}</p>
+
+<div class="section">ACADEMIC QUALIFICATION</div>
+
+<table class="academic">
+  <tr>
+    <th>S.No.</th>
+    <th>Qualification</th>
+    <th>University / Board</th>
+    <th>Year</th>
+    <th>Per %</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>{{ data.qualification }}</td>
+    <td>{{ data.board }}</td>
+    <td>{{ data.year }}</td>
+    <td>{{ data.percentage }}</td>
+  </tr>
+</table>
+
+<div class="section">OTHER QUALIFICATION</div>
+<p>{{ data.skills }}</p>
+
+<div class="section">WORK EXPERIENCE</div>
+<p>{{ data.experience }}</p>
+
+<div class="section">PERSONAL INFORMATION</div>
+
+<table class="personal">
+  <tr>
+    <td class="label">Father's Name</td>
+    <td>: {{ data.father_name }}</td>
+  </tr>
+  <tr>
+    <td class="label">Date of Birth</td>
+    <td>: {{ data.dob }}</td>
+  </tr>
+  <tr>
+    <td class="label">Language Known</td>
+    <td>: {{ data.language }}</td>
+  </tr>
+  <tr>
+    <td class="label">Gender</td>
+    <td>: {{ data.gender }}</td>
+  </tr>
+  <tr>
+    <td class="label">Nationality</td>
+    <td>: {{ data.nationality }}</td>
+  </tr>
+  <tr>
+    <td class="label">Marital Status</td>
+    <td>: {{ data.marital_status }}</td>
+  </tr>
+</table>
+
+<div class="section">DECLARATION</div>
+<p>I hereby declared that the above information given by me is true to best of my Knowledge.</p>
+
+<br>
+
+<table>
+  <tr>
+    <td>Date :</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Place : {{ data.place }}</td>
+    <td class="signature">({{ data.name }})</td>
+  </tr>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Resume/CV</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="navbar">
+  <a class="logo" href="/">Resume <span>Around</span></a>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/create-resume">Create Resume/CV</a>
+    <a href="/create-biodata">Create Biodata</a>
+    <a href="/courses">Free Computer Courses</a>
+    <a href="/about">About Us</a>
+    <a href="/resumes">Saved Resumes</a>
+  </nav>
+</header>
+
+<div class="page">
+
+  <div class="heading-box">
+    Create Your <span>Resume/CV</span>
+  </div>
+
+  <form action="/preview" method="POST" enctype="multipart/form-data" class="card">
+
+    <label>Heading <b>*</b></label>
+    <select name="heading" required>
+      <option>RESUME</option>
+      <option>CURRICULUM VITAE</option>
+    </select>
+
+    <label>Enter Full Name <b>*</b></label>
+    <input name="name" required>
+
+    <label>House No. <b>*</b></label>
+    <input name="house_no" required>
+
+    <label>Landmark / Near by / Gali no.</label>
+    <input name="landmark">
+
+    <label>Area / Locality <b>*</b></label>
+    <input name="area" required>
+
+    <label>State / City <b>*</b></label>
+    <input name="city" required>
+
+    <label>Pincode <b>*</b></label>
+    <input name="pincode" required>
+
+    <label>Mobile No. <b>*</b></label>
+    <input name="phone" required>
+
+    <label>Email Id</label>
+    <input name="email">
+
+    <label>What is your Profile?</label>
+    <input name="job_title" placeholder="Computer Operator">
+
+    <label>Upload Profile Picture</label>
+    <input type="file" name="photo">
+
+    <h2>Career Objective</h2>
+    <select name="objective_type">
+      <option>Entry-level position</option>
+      <option>Custom Objective</option>
+    </select>
+    <textarea name="objective">To make contribution in the organization with best of my ability and also to develop new skills during the interaction to achieve new heights.</textarea>
+
+    <h2>Qualification</h2>
+    <div class="grid-4">
+      <input name="qualification" placeholder="Qualification">
+      <input name="board" placeholder="University / Board">
+      <input name="year" placeholder="Year">
+      <input name="percentage" placeholder="Per %">
+    </div>
+
+    <h2>Other Qualification</h2>
+    <textarea name="skills" placeholder="BASIC EXCEL&#10;GOOGLE SHEET"></textarea>
+
+    <h2>Work Experience</h2>
+    <textarea name="experience" placeholder="6 month of picker and packer in Flipkart Minutes"></textarea>
+
+    <h2>Personal Details</h2>
+
+    <label>Gender <b>*</b></label>
+    <select name="gender" required>
+      <option>Male</option>
+      <option>Female</option>
+      <option>Others</option>
+    </select>
+
+    <label>Father's Name <b>*</b></label>
+    <input name="father_name" required>
+
+    <label>Date of Birth <b>*</b></label>
+    <input type="date" name="dob" required>
+
+    <label>Language known <b>*</b></label>
+    <input name="language" required>
+
+    <label>Nationality <b>*</b></label>
+    <input name="nationality" value="INDIAN" required>
+
+    <label>Marital status <b>*</b></label>
+    <select name="marital_status" required>
+      <option>Unmarried</option>
+      <option>Married</option>
+    </select>
+
+    <label>Place</label>
+    <input name="place" placeholder="West Bengal">
+
+    <button type="submit">Create Resume</button>
+
+  </form>
+</div>
+
+{% include "footer.html" %}
+
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Resume</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="navbar">
+  <a class="logo" href="/">Resume <span>Around</span></a>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/create-resume">Create Resume/CV</a>
+    <a href="/resumes">Saved Resumes</a>
+    <a href="/user-dashboard">Dashboard</a>
+  </nav>
+</header>
+
+<main class="page">
+  <div class="heading-box">
+    Edit Your <span>Resume/CV</span>
+  </div>
+
+  <form method="POST" enctype="multipart/form-data" class="card">
+    <label>Heading <b>*</b></label>
+    <select name="heading" required>
+      <option {% if resume.heading == "RESUME" %}selected{% endif %}>RESUME</option>
+      <option {% if resume.heading == "CURRICULUM VITAE" %}selected{% endif %}>CURRICULUM VITAE</option>
+    </select>
+
+    <label>Enter Full Name <b>*</b></label>
+    <input name="name" value="{{ resume.name or '' }}" required>
+
+    <label>House No. <b>*</b></label>
+    <input name="house_no" value="{{ resume.house_no or '' }}" required>
+
+    <label>Landmark / Near by / Gali no.</label>
+    <input name="landmark" value="{{ resume.landmark or '' }}">
+
+    <label>Area / Locality <b>*</b></label>
+    <input name="area" value="{{ resume.area or '' }}" required>
+
+    <label>State / City <b>*</b></label>
+    <input name="city" value="{{ resume.city or '' }}" required>
+
+    <label>Pincode <b>*</b></label>
+    <input name="pincode" value="{{ resume.pincode or '' }}" required>
+
+    <label>Mobile No. <b>*</b></label>
+    <input name="phone" value="{{ resume.phone or '' }}" required>
+
+    <label>Email Id</label>
+    <input name="email" value="{{ resume.email or '' }}">
+
+    <label>What is your Profile?</label>
+    <input name="job_title" value="{{ resume.job_title or '' }}" placeholder="Computer Operator">
+
+    <label>Upload New Profile Picture</label>
+    {% if resume.photo_path %}
+      <img src="{{ resume.photo_path }}" alt="{{ resume.name }} profile photo" class="profile-photo">
+    {% endif %}
+    <input type="file" name="photo">
+
+    <h2>Career Objective</h2>
+    <textarea name="objective">{{ resume.objective or '' }}</textarea>
+
+    <h2>Qualification</h2>
+    <div class="grid-4">
+      <input name="qualification" value="{{ resume.qualification or '' }}" placeholder="Qualification">
+      <input name="board" value="{{ resume.board or '' }}" placeholder="University / Board">
+      <input name="year" value="{{ resume.year or '' }}" placeholder="Year">
+      <input name="percentage" value="{{ resume.percentage or '' }}" placeholder="Per %">
+    </div>
+
+    <h2>Other Qualification</h2>
+    <textarea name="skills" placeholder="BASIC EXCEL&#10;GOOGLE SHEET">{{ resume.skills or '' }}</textarea>
+
+    <h2>Work Experience</h2>
+    <textarea name="experience" placeholder="6 month of picker and packer in Flipkart Minutes">{{ resume.experience or '' }}</textarea>
+
+    <h2>Personal Details</h2>
+
+    <label>Gender <b>*</b></label>
+    <select name="gender" required>
+      <option {% if resume.gender == "Male" %}selected{% endif %}>Male</option>
+      <option {% if resume.gender == "Female" %}selected{% endif %}>Female</option>
+      <option {% if resume.gender == "Others" %}selected{% endif %}>Others</option>
+    </select>
+
+    <label>Father's Name <b>*</b></label>
+    <input name="father_name" value="{{ resume.father_name or '' }}" required>
+
+    <label>Date of Birth <b>*</b></label>
+    <input type="date" name="dob" value="{{ resume.dob or '' }}" required>
+
+    <label>Language known <b>*</b></label>
+    <input name="language" value="{{ resume.language or '' }}" required>
+
+    <label>Nationality <b>*</b></label>
+    <input name="nationality" value="{{ resume.nationality or 'INDIAN' }}" required>
+
+    <label>Marital status <b>*</b></label>
+    <select name="marital_status" required>
+      <option {% if resume.marital_status == "Unmarried" %}selected{% endif %}>Unmarried</option>
+      <option {% if resume.marital_status == "Married" %}selected{% endif %}>Married</option>
+    </select>
+
+    <label>Place</label>
+    <input name="place" value="{{ resume.place or '' }}" placeholder="West Bengal">
+
+    <button type="submit">Update Resume</button>
+  </form>
+</main>
+
+{% include "footer.html" %}
+
+</body>
+</html>

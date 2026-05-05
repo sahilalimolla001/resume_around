@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Preview</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="navbar">
+  <a class="logo" href="/">Resume <span>Around</span></a>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/create-resume">Create Resume/CV</a>
+    <a href="/resumes">Saved Resumes</a>
+    <a href="/user-dashboard">Dashboard</a>
+  </nav>
+</header>
+
+<main class="page">
+  <div class="save-notice">
+    Resume saved in database.
+    <a href="/resumes">View Saved Resumes</a>
+  </div>
+
+  <div class="preview-actions">
+    <h1>Resume Preview</h1>
+    <form action="/download" method="POST">
+      {% for key, value in data.items() %}
+        <input type="hidden" name="{{ key }}" value="{{ value }}">
+      {% endfor %}
+      <input type="hidden" name="photo_path" value="{{ photo_path }}">
+      <button type="submit">Download PDF</button>
+    </form>
+  </div>
+
+  <article class="resume-card">
+    {% if photo_path %}
+      <img src="{{ photo_path }}" alt="{{ data.name }} profile photo" class="resume-photo">
+    {% endif %}
+
+    <div class="resume-title">{{ data.heading }}</div>
+    <h1>{{ data.name }}</h1>
+    <p class="resume-job">{{ data.job_title }}</p>
+    <p>{{ data.house_no }}{% if data.landmark %}, {{ data.landmark }}{% endif %}</p>
+    <p>{{ data.area }}, {{ data.city }} - {{ data.pincode }}</p>
+    <p>Mob No. : {{ data.phone }}</p>
+    {% if data.email %}<p>Email Id : {{ data.email }}</p>{% endif %}
+
+    <h2>Career Objective</h2>
+    <p>{{ data.objective }}</p>
+
+    <h2>Academic Qualification</h2>
+    <table class="academic">
+      <tr>
+        <th>S.No.</th>
+        <th>Qualification</th>
+        <th>University / Board</th>
+        <th>Year</th>
+        <th>Per %</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>{{ data.qualification }}</td>
+        <td>{{ data.board }}</td>
+        <td>{{ data.year }}</td>
+        <td>{{ data.percentage }}</td>
+      </tr>
+    </table>
+
+    <h2>Other Qualification</h2>
+    <p>{{ data.skills }}</p>
+
+    <h2>Work Experience</h2>
+    <p>{{ data.experience }}</p>
+
+    <h2>Personal Information</h2>
+    <table class="personal">
+      <tr><td>Father's Name</td><td>: {{ data.father_name }}</td></tr>
+      <tr><td>Date of Birth</td><td>: {{ data.dob }}</td></tr>
+      <tr><td>Language Known</td><td>: {{ data.language }}</td></tr>
+      <tr><td>Gender</td><td>: {{ data.gender }}</td></tr>
+      <tr><td>Nationality</td><td>: {{ data.nationality }}</td></tr>
+      <tr><td>Marital Status</td><td>: {{ data.marital_status }}</td></tr>
+    </table>
+
+    <h2>Declaration</h2>
+    <p>I hereby declared that the above information given by me is true to best of my Knowledge.</p>
+    <p class="signature">({{ data.name }})</p>
+  </article>
+
+  <form action="/download" method="POST" class="download-panel">
+    {% for key, value in data.items() %}
+      <input type="hidden" name="{{ key }}" value="{{ value }}">
+    {% endfor %}
+    <input type="hidden" name="photo_path" value="{{ photo_path }}">
+    <button type="submit">Download PDF</button>
+  </form>
+</main>
+
+{% include "footer.html" %}
+
+</body>
+</html>

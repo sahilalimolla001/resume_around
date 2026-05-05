@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/static/admin.css">
+</head>
+<body>
+
+<div class="admin-layout">
+
+  <aside class="sidebar">
+    <h2>Admin Panel</h2>
+    <a href="/admin">Dashboard</a>
+    <a href="/admin/resumes">Resumes</a>
+    <a href="/">Website</a>
+    <a href="/admin/change-password">Change Password</a>
+    <a href="/admin/logout">Logout</a>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <h1>Dashboard</h1>
+      <p>Welcome Admin</p>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Total Resumes</h3>
+        <h2>{{ total_resumes }}</h2>
+      </div>
+
+      <div class="card">
+        <h3>Total Users</h3>
+        <h2>0</h2>
+      </div>
+
+      <div class="card">
+        <h3>Downloads</h3>
+        <h2>0</h2>
+      </div>
+    </div>
+
+    <div class="table-box">
+      <h2>Latest Resumes</h2>
+      <th>Action</th>
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Job Title</th>
+          <th>Phone</th>
+          <th>Email</th>
+        </tr>
+
+        {% for resume in latest_resumes %}
+        <tr>
+          <td>{{ resume.id }}</td>
+          <td>{{ resume.name }}</td>
+          <td>{{ resume.job_title }}</td>
+          <td>{{ resume.phone }}</td>
+          <td>{{ resume.email }}</td>
+          <td>
+            <a class="edit-btn" href="/admin/resume/edit/{{ resume.id }}">Edit</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+  </main>
+
+</div>
+
+</body>
+</html>
