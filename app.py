@@ -5,6 +5,7 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request, redirect, url_for, session
 from authlib.integrations.flask_client import OAuth
+from sqlalchemy import or_
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 
@@ -249,13 +250,166 @@ def admin_dashboard():
         return redirect("/admin/login")
 
     total_resumes = Resume.query.count()
+    total_users = User.query.count()
+    total_admins = Admin.query.count()
+    google_users = User.query.filter_by(password="").count()
     latest_resumes = Resume.query.order_by(Resume.id.desc()).limit(5).all()
+    latest_users = User.query.order_by(User.id.desc()).limit(5).all()
+    admin = Admin.query.get(session.get("admin_id"))
 
     return render_template(
         "admin/dashboard.html",
         total_resumes=total_resumes,
-        latest_resumes=latest_resumes
+        total_users=total_users,
+        total_admins=total_admins,
+        google_users=google_users,
+        latest_resumes=latest_resumes,
+        latest_users=latest_users,
+        admin=admin
     )
+
+
+@app.route("/admin/users")
+def admin_users():
+    if not session.get("admin_logged_in"):
+        return redirect("/admin/login")
+
+    search = request.args.get("q", "").strip()
+    users_query = User.query
+
+    if search:
+        users_query = users_query.filter(
+            or_(
+                User.full_name.ilike(f"%{search}%"),
+                User.email.ilike(f"%{search}%"),
+                User.phone.ilike(f"%{search}%"),
+                User.city.ilike(f"%{search}%")
+            )
+        )
+
+    users = users_query.order_by(User.id.desc()).all()
+
+    return render_template(
+        "admin/users.html",
+        users=users,
+        search=search
+    )
+
+
+@app.route("/admin/user/delete/<int:id>", methods=["POST"])
+def admin_delete_user(id):
+    if not session.get("admin_logged_in"):
+        return redirect("/admin/login")
+
+    user = User.query.get_or_404(id)
+    Resume.query.filter_by(user_id=user.id).delete()
+    db.session.delete(user)
+    db.session.commit()
+
+    return redirect("/admin/users")
+
+
+@app.route("/admin/resumes")
+def admin_resumes():
+    if not session.get("admin_logged_in"):
+        return redirect("/admin/login")
+
+    search = request.args.get("q", "").strip()
+    resumes_query = Resume.query
+
+    if search:
+        resumes_query = resumes_query.filter(
+            or_(
+                Resume.name.ilike(f"%{search}%"),
+                Resume.job_title.ilike(f"%{search}%"),
+                Resume.phone.ilike(f"%{search}%"),
+                Resume.email.ilike(f"%{search}%"),
+                Resume.city.ilike(f"%{search}%")
+            )
+        )
+
+    resumes = resumes_query.order_by(Resume.id.desc()).all()
+
+    return render_template(
+        "admin/resumes.html",
+        resumes=resumes,
+        search=search
+    )
+
+
+@app.route("/admin/resume/edit/<int:id>", methods=["GET", "POST"])
+def admin_edit_resume(id):
+    if not session.get("admin_logged_in"):
+        return redirect("/admin/login")
+
+    resume = Resume.query.get_or_404(id)
+
+    if request.method == "POST":
+        resume.heading = request.form.get("heading")
+        resume.name = request.form.get("name")
+        resume.job_title = request.form.get("job_title")
+        resume.house_no = request.form.get("house_no")
+        resume.landmark = request.form.get("landmark")
+        resume.area = request.form.get("area")
+        resume.city = request.form.get("city")
+        resume.pincode = request.form.get("pincode")
+        resume.phone = request.form.get("phone")
+        resume.email = request.form.get("email")
+        resume.objective = request.form.get("objective")
+        resume.qualification = request.form.get("qualification")
+        resume.board = request.form.get("board")
+        resume.year = request.form.get("year")
+        resume.percentage = request.form.get("percentage")
+        resume.skills = request.form.get("skills")
+        resume.experience = request.form.get("experience")
+        resume.gender = request.form.get("gender")
+        resume.father_name = request.form.get("father_name")
+        resume.dob = request.form.get("dob")
+        resume.language = request.form.get("language")
+        resume.nationality = request.form.get("nationality")
+        resume.marital_status = request.form.get("marital_status")
+        resume.place = request.form.get("place")
+
+        photo = request.files.get("photo")
+
+        if photo and photo.filename:
+            photo_path = os.path.join("static/uploads", photo.filename)
+            photo.save(photo_path)
+            resume.photo_path = "/" + photo_path.replace("\\", "/")
+
+        db.session.commit()
+        return redirect("/admin/resumes")
+
+    return render_template("admin/edit_resume.html", resume=resume)
+
+
+@app.route("/admin/resume/download/<int:id>")
+def admin_download_resume(id):
+    if not session.get("admin_logged_in"):
+        return redirect("/admin/login")
+
+    resume = Resume.query.get_or_404(id)
+    response = create_resume_pdf(
+        resume_to_form_data(resume),
+        resume.photo_path or ""
+    )
+
+    if response is None:
+        return "PDF generate nahi hua", 500
+
+    return response
+
+
+@app.route("/admin/resume/delete/<int:id>", methods=["POST"])
+def admin_delete_resume(id):
+    if not session.get("admin_logged_in"):
+        return redirect("/admin/login")
+
+    resume = Resume.query.get_or_404(id)
+    db.session.delete(resume)
+    db.session.commit()
+
+    return redirect("/admin/resumes")
 
 
 @app.route("/admin/login", methods=["GET", "POST"])

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Users</title>
+  <link rel="stylesheet" href="/static/admin.css">
+</head>
+<body>
+
+<div class="admin-layout">
+  <aside class="sidebar">
+    <h2>Admin Panel</h2>
+    <a href="/admin">Dashboard</a>
+    <a href="/admin/users">Users</a>
+    <a href="/admin/resumes">Resumes</a>
+    <a href="/">Website</a>
+    <a href="/admin/change-password">Change Password</a>
+    <a href="/admin/logout">Logout</a>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <h1>Users</h1>
+      <p>View, search, and manage registered users</p>
+    </div>
+
+    <div class="table-box">
+      <form class="search-box" method="GET">
+        <input type="text" name="q" value="{{ search }}" placeholder="Search name, email, phone, city">
+        <button type="submit">Search</button>
+        <a href="/admin/users">Clear</a>
+      </form>
+
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>City</th>
+          <th>Login</th>
+          <th>Action</th>
+        </tr>
+
+        {% for user in users %}
+        <tr>
+          <td>{{ user.id }}</td>
+          <td>{{ user.full_name or "-" }}</td>
+          <td>{{ user.email or "-" }}</td>
+          <td>{{ user.phone or "-" }}</td>
+          <td>{{ user.city or "-" }}</td>
+          <td>
+            {% if user.password %}
+              <span class="badge">Email</span>
+            {% else %}
+              <span class="badge google">Google</span>
+            {% endif %}
+          </td>
+          <td>
+            <form method="POST" action="/admin/user/delete/{{ user.id }}" onsubmit="return confirm('Delete this user and all user resumes?');">
+              <button class="danger-btn" type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7">No users found</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

@@ -59,7 +59,7 @@ body {
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 22px;
   margin-bottom: 30px;
 }
@@ -92,6 +92,90 @@ body {
   margin-bottom: 18px;
 }
 
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 22px;
+}
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 25px;
+}
+
+.quick-actions a {
+  background: white;
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  color: #111827;
+  font-weight: bold;
+  padding: 15px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.quick-actions a:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.table-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 18px;
+}
+
+.table-heading h2 {
+  margin-bottom: 0;
+}
+
+.table-heading a {
+  color: #2563eb;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.search-box {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) 120px 80px;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.search-box input,
+.search-box button,
+.search-box a {
+  min-height: 42px;
+}
+
+.search-box input {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.search-box button,
+.search-box a {
+  align-items: center;
+  background: #2563eb;
+  border: 0;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  font-weight: bold;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.search-box a {
+  background: #6b7280;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -108,6 +192,52 @@ th {
   background: #f3f4f6;
 }
 
+.action-row {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.action-row form {
+  display: inline;
+}
+
+.download-btn,
+.danger-btn {
+  border: 0;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 14px;
+  padding: 7px 12px;
+  text-decoration: none;
+}
+
+.download-btn {
+  background: #059669;
+}
+
+.danger-btn {
+  background: #dc2626;
+}
+
+.badge {
+  background: #e0f2fe;
+  border-radius: 999px;
+  color: #075985;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 5px 9px;
+}
+
+.badge.google {
+  background: #dcfce7;
+  color: #166534;
+}
+
 @media(max-width: 800px) {
   .admin-layout {
     flex-direction: column;
@@ -118,6 +248,12 @@ th {
   }
 
   .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-grid,
+  .quick-actions,
+  .search-box {
     grid-template-columns: 1fr;
   }
 }
@@ -218,6 +354,39 @@ th {
   padding: 12px;
   border: 1px solid #d1d5db;
   border-radius: 8px;
+}
+
+.change-box select,
+.change-box textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+}
+
+.change-box textarea {
+  min-height: 95px;
+  resize: vertical;
+}
+
+.wide-form {
+  max-width: 760px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.admin-photo {
+  display: block;
+  width: 90px;
+  height: 110px;
+  object-fit: cover;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  margin-bottom: 10px;
 }
 
 .change-box button {

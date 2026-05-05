@@ -11,6 +11,7 @@
   <aside class="sidebar">
     <h2>Admin Panel</h2>
     <a href="/admin">Dashboard</a>
+    <a href="/admin/users">Users</a>
     <a href="/admin/resumes">Resumes</a>
     <a href="/">Website</a>
     <a href="/admin/change-password">Change Password</a>
@@ -20,7 +21,7 @@
   <main class="main-content">
     <div class="topbar">
       <h1>Dashboard</h1>
-      <p>Welcome Admin</p>
+      <p>Welcome {{ admin.username if admin else "Admin" }}</p>
     </div>
 
     <div class="cards">
@@ -31,40 +32,83 @@
 
       <div class="card">
         <h3>Total Users</h3>
-        <h2>0</h2>
+        <h2>{{ total_users }}</h2>
       </div>
 
       <div class="card">
-        <h3>Downloads</h3>
-        <h2>0</h2>
+        <h3>Google Users</h3>
+        <h2>{{ google_users }}</h2>
+      </div>
+
+      <div class="card">
+        <h3>Total Admins</h3>
+        <h2>{{ total_admins }}</h2>
       </div>
     </div>
 
-    <div class="table-box">
-      <h2>Latest Resumes</h2>
-      <th>Action</th>
+    <div class="quick-actions">
+      <a href="/admin/users">Manage Users</a>
+      <a href="/admin/resumes">Manage Resumes</a>
+      <a href="/create-resume">Create Resume</a>
+      <a href="/admin/change-password">Change Password</a>
+    </div>
+
+    <div class="dashboard-grid">
+      <div class="table-box">
+      <div class="table-heading">
+        <h2>Latest Resumes</h2>
+        <a href="/admin/resumes">View All</a>
+      </div>
       <table>
         <tr>
           <th>ID</th>
           <th>Name</th>
           <th>Job Title</th>
-          <th>Phone</th>
-          <th>Email</th>
+          <th>Action</th>
         </tr>
 
         {% for resume in latest_resumes %}
         <tr>
           <td>{{ resume.id }}</td>
-          <td>{{ resume.name }}</td>
-          <td>{{ resume.job_title }}</td>
-          <td>{{ resume.phone }}</td>
-          <td>{{ resume.email }}</td>
+          <td>{{ resume.name or "-" }}</td>
+          <td>{{ resume.job_title or "-" }}</td>
           <td>
             <a class="edit-btn" href="/admin/resume/edit/{{ resume.id }}">Edit</a>
           </td>
         </tr>
+        {% else %}
+        <tr>
+          <td colspan="4">No resumes found</td>
+        </tr>
         {% endfor %}
       </table>
+      </div>
+
+      <div class="table-box">
+        <div class="table-heading">
+          <h2>Latest Users</h2>
+          <a href="/admin/users">View All</a>
+        </div>
+        <table>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+          </tr>
+
+          {% for user in latest_users %}
+          <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.full_name or "-" }}</td>
+            <td>{{ user.email or "-" }}</td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="3">No users found</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
     </div>
 
   </main>

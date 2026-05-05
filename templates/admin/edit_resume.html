@@ -11,6 +11,8 @@
   <aside class="sidebar">
     <h2>Admin Panel</h2>
     <a href="/admin">Dashboard</a>
+    <a href="/admin/users">Users</a>
+    <a href="/admin/resumes">Resumes</a>
     <a href="/admin/change-password">Change Password</a>
     <a href="/admin/logout">Logout</a>
   </aside>
@@ -20,28 +22,95 @@
       <h1>Edit Resume</h1>
     </div>
 
-    <form method="POST" class="change-box">
+    <form method="POST" enctype="multipart/form-data" class="change-box wide-form">
+
+      <label>Heading</label>
+      <select name="heading">
+        <option {% if resume.heading == "RESUME" %}selected{% endif %}>RESUME</option>
+        <option {% if resume.heading == "CURRICULUM VITAE" %}selected{% endif %}>CURRICULUM VITAE</option>
+      </select>
 
       <label>Name</label>
-      <input type="text" name="name" value="{{ resume.name }}">
+      <input type="text" name="name" value="{{ resume.name or '' }}">
 
       <label>Job Title</label>
-      <input type="text" name="job_title" value="{{ resume.job_title }}">
+      <input type="text" name="job_title" value="{{ resume.job_title or '' }}">
 
-      <label>Phone</label>
-      <input type="text" name="phone" value="{{ resume.phone }}">
+      <label>House No.</label>
+      <input type="text" name="house_no" value="{{ resume.house_no or '' }}">
 
-      <label>Email</label>
-      <input type="email" name="email" value="{{ resume.email }}">
+      <label>Landmark</label>
+      <input type="text" name="landmark" value="{{ resume.landmark or '' }}">
+
+      <label>Area</label>
+      <input type="text" name="area" value="{{ resume.area or '' }}">
 
       <label>City</label>
-      <input type="text" name="city" value="{{ resume.city }}">
+      <input type="text" name="city" value="{{ resume.city or '' }}">
+
+      <label>Pincode</label>
+      <input type="text" name="pincode" value="{{ resume.pincode or '' }}">
+
+      <label>Phone</label>
+      <input type="text" name="phone" value="{{ resume.phone or '' }}">
+
+      <label>Email</label>
+      <input type="email" name="email" value="{{ resume.email or '' }}">
+
+      <label>Photo</label>
+      {% if resume.photo_path %}
+        <img src="{{ resume.photo_path }}" class="admin-photo" alt="{{ resume.name }} photo">
+      {% endif %}
+      <input type="file" name="photo">
+
+      <label>Objective</label>
+      <textarea name="objective">{{ resume.objective or '' }}</textarea>
+
+      <div class="form-grid">
+        <div>
+          <label>Qualification</label>
+          <input type="text" name="qualification" value="{{ resume.qualification or '' }}">
+        </div>
+        <div>
+          <label>Board</label>
+          <input type="text" name="board" value="{{ resume.board or '' }}">
+        </div>
+        <div>
+          <label>Year</label>
+          <input type="text" name="year" value="{{ resume.year or '' }}">
+        </div>
+        <div>
+          <label>Percentage</label>
+          <input type="text" name="percentage" value="{{ resume.percentage or '' }}">
+        </div>
+      </div>
+
+      <label>Gender</label>
+      <input type="text" name="gender" value="{{ resume.gender or '' }}">
+
+      <label>Father Name</label>
+      <input type="text" name="father_name" value="{{ resume.father_name or '' }}">
+
+      <label>Date of Birth</label>
+      <input type="text" name="dob" value="{{ resume.dob or '' }}">
+
+      <label>Language</label>
+      <input type="text" name="language" value="{{ resume.language or '' }}">
+
+      <label>Nationality</label>
+      <input type="text" name="nationality" value="{{ resume.nationality or '' }}">
+
+      <label>Marital Status</label>
+      <input type="text" name="marital_status" value="{{ resume.marital_status or '' }}">
+
+      <label>Place</label>
+      <input type="text" name="place" value="{{ resume.place or '' }}">
 
       <label>Skills</label>
-      <textarea name="skills">{{ resume.skills }}</textarea>
+      <textarea name="skills">{{ resume.skills or '' }}</textarea>
 
       <label>Experience</label>
-      <textarea name="experience">{{ resume.experience }}</textarea>
+      <textarea name="experience">{{ resume.experience or '' }}</textarea>
 
       <button type="submit">Update Resume</button>
 
