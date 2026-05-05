@@ -1,0 +1,5 @@
+Flask
+flask_sqlalchemy
+xhtml2pdf
+gunicorn
+psycopg2-binary
