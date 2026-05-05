@@ -509,7 +509,7 @@ def google_login():
             error="Google login setup nahi hua. Render env vars add karein."
         )
 
-    redirect_uri = url_for("google_callback", _external=True)
+    redirect_uri = request.host_url.rstrip("/") + "/auth/google/callback"
     return google.authorize_redirect(redirect_uri)
 
 @app.route("/auth/google/callback")
